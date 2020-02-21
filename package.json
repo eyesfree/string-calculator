@@ -1,0 +1,14 @@
+{
+    "name": "string-calculator",
+    "main": "server.js",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/eyesfree/string-calculator.git"
+    },
+    "author": "kristinavancappelle",
+    "license": "MIT",
+    "dependencies": {
+        "express": "^4.17.1",
+        "mathjs-expression-parser": "^1.0.2"
+    }
+}
