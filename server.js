@@ -47,3 +47,4 @@ function calculateBase64(userInput) {
     }
 }
 
+module.exports 
