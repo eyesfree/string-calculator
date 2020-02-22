@@ -6,16 +6,46 @@ var port = process.env.PORT || 3333;
 
 var router = express.Router();  
 
+var i18n = require('i18n');
+var session = require('express-session');
+var cookieParser = require('cookie-parser');
+i18n.configure({
+    locales:['en', 'bg', 'de', 'fn'],
+    directory: __dirname + 'locales',
+    defaultLocale: 'en',
+    cookie: 'i18n'
+    });
+    
+
+app.use(cookieParser("string-calculator"));
+
+app.use(session({
+    secret: "string-calculator",
+    resave: true,
+    saveUninitialized: true,
+    cookie: { maxAge: 60000 }
+}));
+
+app.use(i18n.init);
+
+
 router.get('/calculate', (req,res) => {
+    var lang = req.acceptsLanguages('de', 'en', 'bg', 'fn');
+    if (lang) {
+        console.log('Spotted supported language:' + lang);
+        res.cookie('i18n', lang);
+        res.setLocale(req.cookies.i18n); // does not work yet
+    }
+
     if(req.query.input) {
         var result = calculateBase64(req.query.input);
         if(isNaN(result)) {
-            res.json({ error: 'true', message: 'Calculation error: ' + result });
+            res.json({ error: 'true', message: i18n.__("error_calc") + result });
         } else {
             res.json({ error: 'false', result: `${result}` });  
         }     
     } else {
-        res.json({ error: 'true', message: 'No input property set' });
+        res.json({ error: 'true', message: i18n.__("no_input") });
     }
 });
 
@@ -43,8 +73,6 @@ function calculateBase64(userInput) {
             return err;
         }
     } else {
-        return 'Invalid expression passed as input.'
+        return i18n.__("invalid_input")
     }
 }
-
-module.exports 
